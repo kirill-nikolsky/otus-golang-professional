@@ -10,8 +10,10 @@ import (
 
 const BackslashRune = 92
 
-var ErrInvalidString = errors.New("invalid string")
-var ErrPositionOutOfRange = errors.New("position is out of range")
+var (
+	ErrInvalidString      = errors.New("invalid string")
+	ErrPositionOutOfRange = errors.New("position is out of range")
+)
 
 func ConvertStringToRunesSlice(tc string) []rune {
 	return []rune(tc)
@@ -44,7 +46,7 @@ func Unpack(tc string) (string, error) {
 			prevRune, _ := GetRuneAtPosition(runes, i-1)
 
 			// Two digits in a row => error case
-			if unicode.IsDigit(prevRune) && backslashMarks[i-1] != true {
+			if unicode.IsDigit(prevRune) && !backslashMarks[i-1] {
 				return "", ErrInvalidString
 			}
 
@@ -64,7 +66,7 @@ func Unpack(tc string) (string, error) {
 		}
 
 		// by default assume next rune = '1'
-		var nextRune = '1'
+		nextRune := '1'
 
 		// check for slice range, and get next rune
 		if i < runesLen-1 {
